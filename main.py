@@ -28,7 +28,8 @@ def solve(guess):
         if None in element:
             answers = [x for x in answers if element[0] not in x]
         elif len(element) == 3:
-            answers = [x for x in answers if element[0] in x not in x[element[1]]]
+            answers = [x for x in answers if element[0] != x[element[1]]]
+            answers = [x for x in answers if element[0] in x]
         else:
             answers = [x for x in answers if element[0] == x[element[1]]]
 
