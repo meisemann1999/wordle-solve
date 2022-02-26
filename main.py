@@ -1,5 +1,6 @@
 import shutil
 from os.path import exists
+from os import remove
 
 def load_dict():
     path = 'data/wordle-answers-alphabetical.txt'
@@ -12,7 +13,14 @@ def load_dict():
         with open(path) as f:
             answers = f.read().splitlines()
             session_copy = shutil.copy(path, session)
-    return answers
+        return answers
+
+def write_dict(contents):
+    session = 'data/session.txt'
+    with open(session, "w") as f:
+        f.truncate(0)
+        for x in contents:
+            f.write(x + "\n")
 
 def solve(guess):
     answers = load_dict()
@@ -20,13 +28,15 @@ def solve(guess):
         if None in element:
             answers = [x for x in answers if element[0] not in x]
         elif len(element) == 3:
-            answers = [x for x in answers if element[0] != x[element[1]]]
+            answers = [x for x in answers if element[0] in x not in x[element[1]]]
         else:
             answers = [x for x in answers if element[0] == x[element[1]]]
 
-    print(answers)
+    write_dict(answers)
+    print("Possible answers:\n")
+    for ans in answers:
+        print(f"* {ans}\n")
             
-
 
 def process_chars(word):
     word = word.lower()
@@ -36,7 +46,7 @@ def process_chars(word):
     for i in range(0, len(word)):
         valid = False
         while not valid:
-            status = input(f"Enter the color of the letter'{word[i]}': ")
+            status = input(f"Enter the color of the letter '{word[i]}': ")
             if status.lower() == 'b':
                 guess.append((word[i], None))
                 valid = True
@@ -50,6 +60,19 @@ def process_chars(word):
                 print("Invalid. Please choose 'b', 'y', or 'g'.")
     solve(guess)
 
-load_dict()
+def main():
+    tmp_file = 'data/session.txt'
+    if exists(tmp_file):
+        remove(tmp_file)
 
-process_chars('arise')
+    n_guess = 1
+
+    while n_guess <= 6:
+        attempt = input("Enter the word you guessed, or -q to quit: ")
+        if attempt.lower() != "-q":
+            process_chars(attempt)
+        else:
+            exit()
+        n_guess += 1
+
+main()
