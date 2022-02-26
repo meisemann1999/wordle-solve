@@ -38,7 +38,6 @@ def solve(guess):
     for ans in answers:
         print(f"* {ans}\n")
             
-
 def process_chars(word):
     word = word.lower()
     guess = []
