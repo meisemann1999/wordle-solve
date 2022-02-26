@@ -12,7 +12,7 @@ def load_dict():
     else:
         with open(path) as f:
             answers = f.read().splitlines()
-            session_copy = shutil.copy(path, session)
+            shutil.copy(path, session)
         return answers
 
 def write_dict(contents):
